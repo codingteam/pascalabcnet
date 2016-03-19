@@ -1,19 +1,19 @@
-%windir%\microsoft.net\framework\v4.0.30319\msbuild /t:rebuild /property:Configuration=Release PascalABCNET.sln
+%windir%\microsoft.net\framework\v4.0.30319\msbuild /t:rebuild /property:Configuration=Debug PascalABCNET.sln
 @IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 
 cd ReleaseGenerators
-..\bin\pabcnetc RebuildStandartModules.pas /rebuild
+..\bin\pabcnetc RebuildStandartModules.pas /rebuild %1
 @IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 
 cd PABCRtl
-..\..\bin\pabcnetc PABCRtl.pas /rebuild
+..\..\bin\pabcnetc PABCRtl.pas /rebuild %1
 @IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 ..\sn.exe -Vr PABCRtl.dll
 ..\sn.exe -R PABCRtl.dll KeyPair.snk
 ..\sn.exe -Vu PABCRtl.dll
 copy PABCRtl.dll ..\..\bin\Lib
 
-..\..\bin\pabcnetc PABCRtl32.pas /rebuild
+..\..\bin\pabcnetc PABCRtl32.pas /rebuild %1
 @IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 ..\sn.exe -Vr PABCRtl32.dll
 ..\sn.exe -R PABCRtl32.dll KeyPair32.snk
@@ -23,7 +23,7 @@ cd ..
 ExecHide.exe gacutil.exe /u PABCRtl
 ExecHide.exe gacutil.exe /i ..\bin\Lib\PABCRtl.dll
 
-..\bin\pabcnetc RebuildStandartModules.pas /rebuild
+..\bin\pabcnetc RebuildStandartModules.pas /rebuild %1
 @IF %ERRORLEVEL% NEQ 0 GOTO ERROR
 
 cd ..\bin
@@ -33,6 +33,6 @@ cd ..
 GOTO EXIT
 
 :ERROR
-PAUSE
+if "%1" neq "/noconsole" pause
 
 :EXIT
