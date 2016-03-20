@@ -65,7 +65,13 @@ end;
 
 procedure CompileAllRunTests(withdll: boolean; only32bit: boolean := false);
 begin
-  
+  var outputDirectory := Path.Combine(TestSuiteDir, 'exe');
+  if withdll then
+  begin
+    var libFileName := Path.Combine(GetLibDir(), 'PABCRtl.dll');
+    &File.Copy(libFileName, Path.Combine(outputDirectory, 'PABCRtl.dll'), true);
+  end;
+
   var comp := new Compiler();
   
   var files := Directory.GetFiles(TestSuiteDir,'*.pas');
@@ -76,7 +82,7 @@ begin
       continue;
     var co: CompilerOptions := new CompilerOptions(files[i],CompilerOptions.OutputType.ConsoleApplicaton);
     co.Debug := true;
-    co.OutputDirectory := TestSuiteDir+PathSeparator+'exe';
+    co.OutputDirectory := outputDirectory;
     co.UseDllForSystemUnits := withdll;
     co.RunWithEnvironment := false;
     co.IgnoreRtlErrors := false;
@@ -96,7 +102,13 @@ end;
 
 procedure CompileAllCompilationTests(dir: string; withdll: boolean);
 begin
-  
+  var outputDirectory := Path.Combine(TestSuiteDir, dir);
+  if withdll then
+  begin
+    var libFileName := Path.Combine(GetLibDir(), 'PABCRtl.dll');
+    &File.Copy(libFileName, Path.Combine(outputDirectory, 'PABCRtl.dll'), true);
+  end;
+
   var comp := new Compiler();
   
   var files := Directory.GetFiles(TestSuiteDir+PathSeparator+dir,'*.pas');
@@ -107,7 +119,7 @@ begin
       continue;
     var co: CompilerOptions := new CompilerOptions(files[i],CompilerOptions.OutputType.ConsoleApplicaton);
     co.Debug := true;
-    co.OutputDirectory := TestSuiteDir+PathSeparator+dir;
+    co.OutputDirectory := outputDirectory;
     co.UseDllForSystemUnits := withdll;
     co.RunWithEnvironment := false;
     co.IgnoreRtlErrors := false;
